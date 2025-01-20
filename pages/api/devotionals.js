@@ -14,21 +14,36 @@ export default async function handler(req, res) {
         isPublished 
       } = req.body;
 
+      // Log the incoming request data
+      console.log('Received devotional data:', {
+        title,
+        author,
+        content,
+        scripture,
+        category,
+        isPublished
+      });
+
       const newDevotional = await prisma.devotional.create({
         data: {
           title,
           author,
           content,
-          scripture,
-          category,
-          isPublished: isPublished || true
+          scripture: scripture || null,
+          category: category || null,
+          isPublished: Boolean(isPublished)
         }
       });
 
+      console.log('Created devotional:', newDevotional);
       res.status(201).json(newDevotional);
     } catch (error) {
-      console.error('Request error', error);
-      res.status(500).json({ error: 'Error creating devotional' });
+      console.error('Detailed error:', {
+        message: error.message,
+        code: error.code,
+        meta: error.meta
+      });
+      res.status(500).json({ error: 'Error creating devotional', details: error.message });
     }
   } else if (req.method === 'GET') {
     try {
