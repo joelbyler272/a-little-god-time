@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import NewsletterSignup from './NewsletterSignup';
 
@@ -7,6 +8,11 @@ export default function Layout({ children, showNewsletter = true }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-light-gray">
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+      </Head>
+
       {/* Navigation */}
       <nav className="bg-white shadow-md">
         <div className="max-width-container flex justify-between items-center py-4">
@@ -18,8 +24,7 @@ export default function Layout({ children, showNewsletter = true }) {
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
             <Link href="/" className="nav-link">Home</Link>
-            <Link href="/devotionals" className="nav-link">Devotionals</Link>
-            <Link href="/archive" className="nav-link">Archive</Link>
+            <Link href="/devotional" className="nav-link">Devotional</Link>
             <Link href="/contribute" className="nav-link">Contribute</Link>
             <Link href="/about" className="nav-link">About</Link>
             <Link href="/contact" className="nav-link">Contact</Link>
@@ -32,7 +37,7 @@ export default function Layout({ children, showNewsletter = true }) {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-dark-blue focus:outline-none"
             >
-              {isMenuOpen ? '✕' : '☰'}
+              {isMenuOpen ? 'Close' : 'Menu'}
             </button>
           </div>
         </div>
@@ -42,8 +47,7 @@ export default function Layout({ children, showNewsletter = true }) {
           <div className="md:hidden bg-white">
             <div className="px-4 pt-2 pb-4 space-y-2">
               <Link href="/" className="block nav-link">Home</Link>
-              <Link href="/devotionals" className="block nav-link">Devotionals</Link>
-              <Link href="/archive" className="block nav-link">Archive</Link>
+              <Link href="/devotional" className="block nav-link">Devotional</Link>
               <Link href="/contribute" className="block nav-link">Contribute</Link>
               <Link href="/about" className="block nav-link">About</Link>
               <Link href="/contact" className="block nav-link">Contact</Link>
@@ -72,7 +76,7 @@ export default function Layout({ children, showNewsletter = true }) {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><Link href="/" className="hover:text-light-gold">Home</Link></li>
-              <li><Link href="/devotionals" className="hover:text-light-gold">Devotionals</Link></li>
+              <li><Link href="/devotional" className="hover:text-light-gold">Devotional</Link></li>
               <li><Link href="/contribute" className="hover:text-light-gold">Contribute</Link></li>
               <li><Link href="/faq" className="hover:text-light-gold">FAQ</Link></li>
             </ul>
