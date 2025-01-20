@@ -1,48 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Layout from '../../components/Layout';
 
 export default function Devotional() {
+  const [devotionals, setDevotionals] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const devotionals = [
-    { 
-      id: 1, 
-      title: 'Finding Peace in Uncertain Times', 
-      author: 'Sarah Johnson', 
-      date: 'January 15, 2025', 
-      category: 'Hope', 
-      excerpt: 'In moments of doubt, learn how to anchor your faith...',
-      imageUrl: '/api/placeholder/300/200'
-    },
-    { 
-      id: 2, 
-      title: 'The Power of Gratitude', 
-      author: 'Michael Rodriguez', 
-      date: 'January 10, 2025', 
-      category: 'Thankfulness', 
-      excerpt: 'Discover how gratitude can transform your spiritual journey...',
-      imageUrl: '/api/placeholder/300/200'
-    },
-    { 
-      id: 3, 
-      title: 'Overcoming Challenges with Faith', 
-      author: 'Emily Chen', 
-      date: 'January 5, 2025', 
-      category: 'Strength', 
-      excerpt: 'Explore biblical strategies for facing life\'s difficulties...',
-      imageUrl: '/api/placeholder/300/200'
-    },
-  ];
+  useEffect(() => {
+    const fetchDevotionals = async () => {
+      try {
+        const response = await fetch('/api/devotionals');
+        if (!response.ok) {
+          throw new Error('Failed to fetch devotionals');
+        }
+        const data = await response.json();
+        setDevotionals(data);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
 
-  const categories = ['All', 'Hope', 'Thankfulness', 'Strength', 'Love'];
+    fetchDevotionals();
+  }, []);
+
+  const categories = ['All', 'Hope', 'Faith', 'Love', 'Strength'];
 
   const filteredDevotionals = devotionals.filter(dev => 
-    (selectedCategory === 'all' || dev.category.toLowerCase() === selectedCategory.toLowerCase()) &&
+    (selectedCategory.toLowerCase() === 'all' || 
+     dev.category?.toLowerCase() === selectedCategory.toLowerCase()) &&
     (dev.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     dev.author.toLowerCase().includes(searchTerm.toLowerCase()))
+     dev.author?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="max-width-container py-12 text-center">
+          <p className="text-xl text-gray-600">Loading devotionals...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="max-width-container py-12 text-center">
+          <p className="text-xl text-red-600">{error}</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -90,42 +103,51 @@ export default function Devotional() {
         </div>
 
         {/* Devotionals Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {filteredDevotionals.map((devotional) => (
-            <div 
-              key={devotional.id} 
-              className="card hover:scale-105 transform transition duration-300"
-            >
-              <img 
-                src={devotional.imageUrl} 
-                alt={devotional.title} 
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm text-soft-green bg-soft-green/10 px-3 py-1 rounded-full">
-                    {devotional.category}
-                  </span>
-                  <span className="text-sm text-gray-500">{devotional.date}</span>
-                </div>
-                <h3 className="text-2xl font-semibold text-dark-blue mb-3">
-                  {devotional.title}
-                </h3>
-                <p className="text-gray-600 mb-4">{devotional.excerpt}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">By {devotional.author}</span>
-                  <button className="nav-link">Read More</button>
+        {filteredDevotionals.length > 0 ? (
+          <div className="grid md:grid-cols-3 gap-8">
+            {filteredDevotionals.map((devotional) => (
+              <div 
+                key={devotional.id} 
+                className="card hover:scale-105 transform transition duration-300"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    {devotional.category && (
+                      <span className="text-sm text-soft-green bg-soft-green/10 px-3 py-1 rounded-full">
+                        {devotional.category}
+                      </span>
+                    )}
+                    <span className="text-sm text-gray-500">
+                      {new Date(devotional.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-semibold text-dark-blue mb-3">
+                    {devotional.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    {devotional.excerpt || devotional.content.substring(0, 150) + '...'}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-500">
+                      By {devotional.author}
+                    </span>
+                    <Link 
+                      href={`/devotional/${devotional.id}`} 
+                      className="nav-link"
+                    >
+                      Read More
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* No Results */}
-        {filteredDevotionals.length === 0 && (
+            ))}
+          </div>
+        ) : (
           <div className="text-center py-12 bg-soft-blue/10 rounded-lg">
             <h3 className="text-2xl text-dark-blue mb-4">No Devotionals Found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+            <p className="text-gray-600">
+              Try adjusting your search or filter criteria
+            </p>
           </div>
         )}
 
