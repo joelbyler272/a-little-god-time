@@ -1,73 +1,106 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import Layout from '../components/Layout';
 
 export default function Home() {
-  return (
-    <div>
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="max-width-container text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            A Little God Time
-          </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Discover daily devotionals that nourish your soul and inspire your spiritual journey
-          </p>
-          <div className="space-x-4">
-            <Link href="/devotionals" className="btn-primary inline-block">
-              Explore Devotionals
-            </Link>
-            <Link href="/contribute" className="btn-secondary inline-block">
-              Contribute
-            </Link>
-          </div>
-        </div>
-      </section>
+  const [activeTab, setActiveTab] = useState('devotional');
 
-      {/* Featured Devotionals */}
-      <section className="section-padding bg-light-gray">
-        <div className="max-width-container">
-          <h2 className="text-center mb-12">Featured Devotionals</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="card hover:scale-105 transform transition duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Daily Reflection {item}
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  A short, meaningful meditation to center your day and connect with divine wisdom.
-                </p>
-                <Link href={`/devotional/${item}`} className="nav-link">
-                  Read More
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section className="section-padding">
-        <div className="max-width-container grid md:grid-cols-2 gap-12 items-center">
+  const tabs = [
+    { id: 'devotional', title: 'Daily Devotional', content: (
+      <div className="card p-8 bg-white shadow-lg">
+        <h2 className="text-3xl font-bold text-dark-blue mb-6">Today's Reflection</h2>
+        <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h2 className="mb-6">Our Mission</h2>
-            <p className="text-lg mb-4">
-              A Little God Time is more than a platform—it's a spiritual companion 
-              designed to provide moments of reflection, growth, and connection.
+            <h3 className="text-2xl font-semibold mb-4">Embracing God's Love</h3>
+            <p className="text-gray-600 mb-4">
+              In the quiet moments of our day, we find solace in understanding 
+              that we are deeply loved, unconditionally and eternally.
             </p>
-            <p className="text-lg">
-              We believe in the power of daily devotionals to transform lives 
-              and draw us closer to divine purpose.
-            </p>
-          </div>
-          <div className="bg-soft-blue rounded-lg p-8 text-white text-center shadow-lg">
-            <blockquote className="italic mb-4">
-              "Draw near to God, and he will draw near to you."
+            <blockquote className="italic border-l-4 border-soft-blue pl-4 mb-4">
+              "See what great love the Father has lavished on us, that we should be 
+              called children of God!" - 1 John 3:1
             </blockquote>
-            <cite>- James 4:8</cite>
+            <button className="btn-primary">Read Full Devotional</button>
+          </div>
+          <div className="bg-light-gold/10 rounded-lg p-6 flex items-center justify-center">
+            <img 
+              src="/api/placeholder/400/300" 
+              alt="Devotional Illustration" 
+              className="rounded-lg shadow-md"
+            />
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    )},
+    { id: 'prayer', title: 'Prayer Request', content: (
+      <div className="card p-8 bg-white shadow-lg">
+        <h2 className="text-3xl font-bold text-dark-blue mb-6">Share Your Prayer</h2>
+        <form className="space-y-4">
+          <div>
+            <label className="block text-dark-blue mb-2">Your Name</label>
+            <input 
+              type="text" 
+              className="w-full px-4 py-2 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
+            />
+          </div>
+          <div>
+            <label className="block text-dark-blue mb-2">Prayer Request</label>
+            <textarea 
+              rows="4" 
+              className="w-full px-4 py-2 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
+            ></textarea>
+          </div>
+          <button className="btn-primary">Submit Prayer Request</button>
+        </form>
+      </div>
+    )},
+    { id: 'community', title: 'Community', content: (
+      <div className="card p-8 bg-white shadow-lg">
+        <h2 className="text-3xl font-bold text-dark-blue mb-6">Community Connections</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { title: 'Bible Study Group', description: 'Wednesdays at 7 PM', link: '#' },
+            { title: 'Youth Ministry', description: 'Fridays at 6 PM', link: '#' },
+            { title: 'Volunteer Opportunities', description: 'Serve your community', link: '#' }
+          ].map((item, index) => (
+            <div key={index} className="bg-soft-blue/10 p-6 rounded-lg hover:bg-soft-blue/20 transition-colors">
+              <h3 className="text-xl font-semibold text-dark-blue mb-2">{item.title}</h3>
+              <p className="text-gray-600 mb-4">{item.description}</p>
+              <Link href={item.link} className="nav-link">Learn More</Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    )},
+  ];
+
+  return (
+    <Layout>
+      <div className="max-width-container py-12">
+        {/* Tabbed Navigation */}
+        <div className="flex justify-center mb-8 bg-white rounded-full shadow-md p-2 max-w-xl mx-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                px-6 py-3 rounded-full transition-all duration-300
+                ${activeTab === tab.id 
+                  ? 'bg-golden-yellow text-white' 
+                  : 'text-dark-blue hover:bg-soft-blue/20'
+                }
+              `}
+            >
+              {tab.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Active Tab Content */}
+        <div className="mt-8">
+          {tabs.find(tab => tab.id === activeTab)?.content}
+        </div>
+      </div>
+    </Layout>
   );
 }
