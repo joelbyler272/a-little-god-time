@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
-import { validateEmail, saveFormSubmission } from '../../lib/formSubmission';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -21,7 +20,12 @@ export default function Contact() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const validateEmail = (email) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setStatus('');
@@ -32,19 +36,29 @@ export default function Contact() {
       return;
     }
 
-    // Attempt to save form submission
-    const result = saveFormSubmission('contact', formData);
-
-    if (result.success) {
-      setStatus('Your message has been received. We will get back to you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
-    } else {
-      setError(result.message);
+
+      if (response.ok) {
+        setStatus('Your message has been received. We will get back to you soon.');
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'An error occurred while submitting your message.');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
     }
   };
 
