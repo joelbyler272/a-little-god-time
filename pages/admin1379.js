@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import 'react-quill/dist/quill.snow.css';
 import { PrismaClient } from '@prisma/client';
 
 // Dynamically import a rich text editor
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('devotionals');
-  
+
   // Devotional Form State
   const [devotionalTitle, setDevotionalTitle] = useState('');
   const [devotionalAuthor, setDevotionalAuthor] = useState('');
@@ -23,17 +23,10 @@ export default function AdminPage() {
   const [newsletterTitle, setNewsletterTitle] = useState('');
   const [newsletterContent, setNewsletterContent] = useState('');
 
-  // Submissions State
-  const [contactSubmissions, setContactSubmissions] = useState([]);
-  const [devotionalSubmissions, setDevotionalSubmissions] = useState([]);
-
   useEffect(() => {
     // Check authentication when component mounts
-    const checkAuth = () => {
-      const storedAuth = localStorage.getItem('admin_authenticated');
-      setIsAuthenticated(storedAuth === 'true');
-    };
-    checkAuth();
+    const storedAuth = localStorage.getItem('admin_authenticated');
+    setIsAuthenticated(storedAuth === 'true');
   }, []);
 
   const handleLogin = () => {
@@ -55,22 +48,19 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/devotionals', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: devotionalTitle,
           author: devotionalAuthor,
           content: devotionalContent,
           scripture: devotionalScripture,
           category: devotionalCategory,
-          isPublished: true
-        })
+          isPublished: true,
+        }),
       });
 
       if (response.ok) {
         alert('Devotional added successfully');
-        // Reset form
         setDevotionalTitle('');
         setDevotionalAuthor('');
         setDevotionalContent('');
@@ -90,18 +80,12 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: newsletterTitle,
-          content: newsletterContent
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: newsletterTitle, content: newsletterContent }),
       });
 
       if (response.ok) {
         alert('Newsletter content saved');
-        // Reset form
         setNewsletterTitle('');
         setNewsletterContent('');
       } else {
@@ -113,7 +97,6 @@ export default function AdminPage() {
     }
   };
 
-  // If not authenticated, show login
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-soft-blue/10">
@@ -126,10 +109,7 @@ export default function AdminPage() {
             placeholder="Enter password"
             className="w-full px-4 py-2 border border-soft-blue rounded-lg mb-4"
           />
-          <button 
-            onClick={handleLogin}
-            className="w-full btn-primary"
-          >
+          <button onClick={handleLogin} className="w-full btn-primary">
             Login
           </button>
         </div>
@@ -137,40 +117,34 @@ export default function AdminPage() {
     );
   }
 
-  // Authenticated view
   return (
     <div className="max-width-container py-12">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-dark-blue">Admin Dashboard</h1>
-        <Link href="/" className="btn-secondary">Back to Site</Link>
+        <Link href="/" className="btn-secondary">
+          Back to Site
+        </Link>
       </div>
 
-      {/* Tabs */}
       <div className="flex mb-8">
         {['Devotionals', 'Contact Submissions', 'Newsletter'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab.toLowerCase().replace(' ', ''))}
-            className={`
-              px-4 py-2 mr-2 rounded
-              ${activeTab === tab.toLowerCase().replace(' ', '') 
-                ? 'bg-golden-yellow text-white' 
+            className={`px-4 py-2 mr-2 rounded ${
+              activeTab === tab.toLowerCase().replace(' ', '')
+                ? 'bg-golden-yellow text-white'
                 : 'bg-soft-blue/10 text-dark-blue'
-              }
-            `}
+            }`}
           >
             {tab}
           </button>
         ))}
-        <button 
-          onClick={handleLogout}
-          className="ml-auto btn-secondary"
-        >
+        <button onClick={handleLogout} className="ml-auto btn-secondary">
           Logout
         </button>
       </div>
 
-      {/* Devotionals Tab */}
       {activeTab === 'devotionals' && (
         <div className="grid md:grid-cols-2 gap-8">
           <form onSubmit={handleDevotionalSubmit} className="space-y-4">
@@ -209,7 +183,7 @@ export default function AdminPage() {
               <option value="Love">Love</option>
               <option value="Strength">Strength</option>
             </select>
-            <ReactQuill 
+            <ReactQuill
               value={devotionalContent}
               onChange={setDevotionalContent}
               placeholder="Devotional Content"
@@ -222,7 +196,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Newsletter Tab */}
       {activeTab === 'newsletter' && (
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">Create Newsletter</h2>
@@ -234,16 +207,13 @@ export default function AdminPage() {
             required
             className="w-full px-4 py-2 border border-soft-blue rounded-lg"
           />
-          <ReactQuill 
+          <ReactQuill
             value={newsletterContent}
             onChange={setNewsletterContent}
             placeholder="Newsletter Content"
             className="bg-white"
           />
-          <button 
-            onClick={handleNewsletterSubmit}
-            className="btn-primary"
-          >
+          <button onClick={handleNewsletterSubmit} className="btn-primary">
             Save Newsletter
           </button>
         </div>
