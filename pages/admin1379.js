@@ -23,16 +23,52 @@ export default function AdminPage() {
   const [newsletterTitle, setNewsletterTitle] = useState('');
   const [newsletterContent, setNewsletterContent] = useState('');
 
+  // Contact and Contribution Submissions State
+  const [contactSubmissions, setContactSubmissions] = useState([]);
+  const [contributionSubmissions, setContributionSubmissions] = useState([]);
+
   useEffect(() => {
     // Check authentication when component mounts
     const storedAuth = localStorage.getItem('admin_authenticated');
     setIsAuthenticated(storedAuth === 'true');
+
+    // Fetch submissions if authenticated
+    if (storedAuth === 'true') {
+      fetchContactSubmissions();
+      fetchContributionSubmissions();
+    }
   }, []);
+
+  const fetchContactSubmissions = async () => {
+    try {
+      const response = await fetch('/api/contact-submissions');
+      if (response.ok) {
+        const data = await response.json();
+        setContactSubmissions(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contact submissions:', error);
+    }
+  };
+
+  const fetchContributionSubmissions = async () => {
+    try {
+      const response = await fetch('/api/contribution-submissions');
+      if (response.ok) {
+        const data = await response.json();
+        setContributionSubmissions(data);
+      }
+    } catch (error) {
+      console.error('Error fetching contribution submissions:', error);
+    }
+  };
 
   const handleLogin = () => {
     if (password === 'Wind-Unpiloted8-Grass') {
       setIsAuthenticated(true);
       localStorage.setItem('admin_authenticated', 'true');
+      fetchContactSubmissions();
+      fetchContributionSubmissions();
     } else {
       alert('Incorrect password');
     }
@@ -97,6 +133,26 @@ export default function AdminPage() {
     }
   };
 
+  const handleMarkAsResolved = async (submissionId, type) => {
+    try {
+      const response = await fetch(`/api/${type}-submissions/${submissionId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isResolved: true }),
+      });
+
+      if (response.ok) {
+        if (type === 'contact') {
+          fetchContactSubmissions();
+        } else {
+          fetchContributionSubmissions();
+        }
+      }
+    } catch (error) {
+      console.error('Error marking as resolved:', error);
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-soft-blue/10">
@@ -127,7 +183,7 @@ export default function AdminPage() {
       </div>
 
       <div className="flex mb-8">
-        {['Devotionals', 'Contact Submissions', 'Newsletter'].map((tab) => (
+        {['Devotionals', 'Contact Submissions', 'Contributions', 'Newsletter'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab.toLowerCase().replace(' ', ''))}
@@ -193,6 +249,82 @@ export default function AdminPage() {
               Add Devotional
             </button>
           </form>
+        </div>
+      )}
+
+      {activeTab === 'contactsubmissions' && (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">Contact Form Submissions</h2>
+          <div className="grid gap-4">
+            {contactSubmissions.map((submission) => (
+              <div
+                key={submission.id}
+                className={`p-4 rounded-lg border ${
+                  submission.isResolved ? 'bg-gray-50 border-gray-200' : 'bg-white border-soft-blue'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold">{submission.subject}</h3>
+                    <p className="text-sm text-gray-600">From: {submission.name} ({submission.email})</p>
+                    <p className="mt-2">{submission.message}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Submitted: {new Date(submission.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  {!submission.isResolved && (
+                    <button
+                      onClick={() => handleMarkAsResolved(submission.id, 'contact')}
+                      className="btn-secondary text-sm"
+                    >
+                      Mark as Resolved
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+            {contactSubmissions.length === 0 && (
+              <p className="text-gray-500">No contact submissions yet.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'contributions' && (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">Contribution Submissions</h2>
+          <div className="grid gap-4">
+            {contributionSubmissions.map((submission) => (
+              <div
+                key={submission.id}
+                className={`p-4 rounded-lg border ${
+                  submission.isResolved ? 'bg-gray-50 border-gray-200' : 'bg-white border-soft-blue'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold">{submission.title}</h3>
+                    <p className="text-sm text-gray-600">By: {submission.author}</p>
+                    <div className="mt-2 prose max-w-none" dangerouslySetInnerHTML={{ __html: submission.content }} />
+                    <p className="text-sm text-gray-500 mt-2">
+                      Submitted: {new Date(submission.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  {!submission.isResolved && (
+                    <button
+                      onClick={() => handleMarkAsResolved(submission.id, 'contribution')}
+                      className="btn-secondary text-sm"
+                    >
+                      Mark as Reviewed
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+            {contributionSubmissions.length === 0 && (
+              <p className="text-gray-500">No contribution submissions yet.</p>
+            )}
+          </div>
         </div>
       )}
 
