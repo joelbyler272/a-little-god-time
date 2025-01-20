@@ -1,95 +1,144 @@
-import Head from 'next/head'
-import Layout from '../../components/Layout'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Layout from '../../components/Layout';
 
 export default function Devotional() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const devotionals = [
+    { 
+      id: 1, 
+      title: 'Finding Peace in Uncertain Times', 
+      author: 'Sarah Johnson', 
+      date: 'January 15, 2025', 
+      category: 'Hope', 
+      excerpt: 'In moments of doubt, learn how to anchor your faith...',
+      imageUrl: '/api/placeholder/300/200'
+    },
+    { 
+      id: 2, 
+      title: 'The Power of Gratitude', 
+      author: 'Michael Rodriguez', 
+      date: 'January 10, 2025', 
+      category: 'Thankfulness', 
+      excerpt: 'Discover how gratitude can transform your spiritual journey...',
+      imageUrl: '/api/placeholder/300/200'
+    },
+    { 
+      id: 3, 
+      title: 'Overcoming Challenges with Faith', 
+      author: 'Emily Chen', 
+      date: 'January 5, 2025', 
+      category: 'Strength', 
+      excerpt: 'Explore biblical strategies for facing life\'s difficulties...',
+      imageUrl: '/api/placeholder/300/200'
+    },
+  ];
+
+  const categories = ['All', 'Hope', 'Thankfulness', 'Strength', 'Love'];
+
+  const filteredDevotionals = devotionals.filter(dev => 
+    (selectedCategory === 'all' || dev.category.toLowerCase() === selectedCategory.toLowerCase()) &&
+    (dev.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     dev.author.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <Layout>
-      <Head>
-        <title>Today's Devotional - A Little God Time</title>
-        <meta name="description" content="Read today's devotional and spend time with God." />
-      </Head>
-
       <div className="max-width-container py-12">
-        <article className="max-w-3xl mx-auto">
-          <header className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-dark-blue mb-4">
-              Finding Peace in His Presence
-            </h1>
-            <p className="text-xl text-gray-600 mb-4">
-              January 20, 2025
-            </p>
-            <div className="w-16 h-1 bg-golden-yellow mx-auto"></div>
-          </header>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-dark-blue mb-4">
+            Daily Devotionals
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Inspiring readings to nourish your soul and deepen your spiritual connection
+          </p>
+        </div>
 
-          <div>
-            <blockquote className="text-xl italic mb-8 p-6 bg-soft-blue/10 rounded-lg border-l-4 border-golden-yellow">
-              "Come to me, all you who are weary and burdened, and I will give you rest."
-              <footer className="text-right mt-2 text-dark-blue">- Matthew 11:28</footer>
-            </blockquote>
+        {/* Search and Filter Section */}
+        <div className="mb-12 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          {/* Search Input */}
+          <div className="w-full md:w-1/2">
+            <input 
+              type="text" 
+              placeholder="Search devotionals..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-3 border border-soft-blue rounded-full focus:ring-2 focus:ring-golden-yellow"
+            />
+          </div>
 
-            {[
-              "In our fast-paced world, finding moments of true peace can seem like an impossible task. Our days are filled with endless notifications, deadlines, and responsibilities that constantly demand our attention. Yet, in the midst of this chaos, God extends a gentle invitation to find rest in His presence.",
-              "When Jesus spoke these words, He wasn't just offering a temporary respite from physical tiredness. He was extending an invitation to experience deep, soul-level rest that can only come from connecting with our Creator. This rest isn't about escaping our responsibilities or finding a quiet corner to hide away; it's about finding peace in the midst of our daily lives."
-            ].map((paragraph, index) => (
-              <p key={index} className="text-lg text-gray-700 mb-6">{paragraph}</p>
+          {/* Category Filters */}
+          <div className="flex space-x-2 overflow-x-auto">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category.toLowerCase())}
+                className={`
+                  px-4 py-2 rounded-full text-sm transition-all duration-300
+                  ${selectedCategory === category.toLowerCase() 
+                    ? 'bg-golden-yellow text-white' 
+                    : 'bg-soft-blue/10 text-dark-blue hover:bg-soft-blue/20'
+                  }
+                `}
+              >
+                {category}
+              </button>
             ))}
+          </div>
+        </div>
 
-            <section className="bg-soft-blue/10 p-6 rounded-lg mb-8">
-              <h2 className="text-2xl font-semibold text-dark-blue mb-4">Reflection</h2>
-              <p className="text-gray-700">
-                Take a moment to consider: What burdens are you carrying today? What's making you feel 
-                weary? Jesus invites you to bring these to Him. Sometimes we hold onto our struggles, 
-                thinking we need to figure everything out on our own. But true rest comes when we 
-                surrender our burdens to Him and trust in His perfect timing and plan.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-dark-blue mb-4">Prayer</h2>
-              <p className="text-gray-700 italic border-l-4 border-golden-yellow pl-4">
-                Dear Heavenly Father, thank you for your invitation to find rest in your presence. 
-                Help me to release my burdens to you and trust in your perfect plan. Teach me to 
-                find moments of peace throughout my day by turning my thoughts to you. Give me the 
-                wisdom to prioritize time with you and the courage to let go of the things that 
-                weigh me down. In Jesus' name, Amen.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-dark-blue mb-4">Today's Practice</h2>
-              <p className="text-gray-700">
-                Set aside 5 minutes today to simply be still in God's presence. Find a quiet place, 
-                take a few deep breaths, and focus on this verse. What burdens can you release to 
-                Him today? Write them down as a symbolic act of surrendering them to God.
-              </p>
-            </section>
-
-            <footer className="mt-12 pt-8 border-t border-soft-blue">
-              <div className="flex justify-between items-center mb-8">
-                <button className="nav-link">← Previous Devotional</button>
-                <button className="nav-link">Next Devotional →</button>
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-semibold text-dark-blue mb-4">Share this Devotional</h3>
-                <div className="flex justify-center space-x-4">
-                  {[
-                    { name: 'Twitter', color: 'bg-[#1DA1F2]' },
-                    { name: 'Facebook', color: 'bg-[#4267B2]' },
-                    { name: 'WhatsApp', color: 'bg-[#25D366]' }
-                  ].map((platform) => (
-                    <button 
-                      key={platform.name} 
-                      className={`${platform.color} text-white px-4 py-2 rounded-lg hover:opacity-90 transition`}
-                    >
-                      {platform.name}
-                    </button>
-                  ))}
+        {/* Devotionals Grid */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {filteredDevotionals.map((devotional) => (
+            <div 
+              key={devotional.id} 
+              className="card hover:scale-105 transform transition duration-300"
+            >
+              <img 
+                src={devotional.imageUrl} 
+                alt={devotional.title} 
+                className="w-full h-48 object-cover rounded-t-lg"
+              />
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm text-soft-green bg-soft-green/10 px-3 py-1 rounded-full">
+                    {devotional.category}
+                  </span>
+                  <span className="text-sm text-gray-500">{devotional.date}</span>
+                </div>
+                <h3 className="text-2xl font-semibold text-dark-blue mb-3">
+                  {devotional.title}
+                </h3>
+                <p className="text-gray-600 mb-4">{devotional.excerpt}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500">By {devotional.author}</span>
+                  <button className="nav-link">Read More</button>
                 </div>
               </div>
-            </footer>
+            </div>
+          ))}
+        </div>
+
+        {/* No Results */}
+        {filteredDevotionals.length === 0 && (
+          <div className="text-center py-12 bg-soft-blue/10 rounded-lg">
+            <h3 className="text-2xl text-dark-blue mb-4">No Devotionals Found</h3>
+            <p className="text-gray-600">Try adjusting your search or filter criteria</p>
           </div>
-        </article>
+        )}
+
+        {/* Archive Button */}
+        <div className="text-center mt-12">
+          <Link 
+            href="/archive" 
+            className="btn-primary inline-block"
+          >
+            View Full Archive
+          </Link>
+        </div>
       </div>
     </Layout>
-  )
+  );
 }
