@@ -38,7 +38,7 @@ export default function Layout({ children }) {
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/devotionals">Devotionals</NavLink>
+            <NavLink href="/devotional">Devotionals</NavLink>
             <NavLink href="/contribute">Contribute</NavLink>
             <NavLink href="/about">About</NavLink>
           </div>
@@ -59,7 +59,7 @@ export default function Layout({ children }) {
           <div className="md:hidden bg-white">
             <div className="px-4 pt-2 pb-4 space-y-2">
               <NavLink href="/">Home</NavLink>
-              <NavLink href="/devotionals">Devotionals</NavLink>
+              <NavLink href="/devotional">Devotionals</NavLink>
               <NavLink href="/contribute">Contribute</NavLink>
               <NavLink href="/about">About</NavLink>
             </div>
@@ -83,7 +83,7 @@ export default function Layout({ children }) {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><Link href="/" className="hover:text-light-gold">Home</Link></li>
-              <li><Link href="/devotionals" className="hover:text-light-gold">Devotionals</Link></li>
+              <li><Link href="/devotional" className="hover:text-light-gold">Devotionals</Link></li>
               <li><Link href="/contribute" className="hover:text-light-gold">Contribute</Link></li>
             </ul>
           </div>

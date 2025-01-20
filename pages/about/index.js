@@ -39,7 +39,7 @@ export default function About() {
                 <ul className="space-y-4 mb-8 text-gray-700">
                   {[
                     { title: 'Accessible', desc: 'Written in clear, engaging language that speaks to both new believers and seasoned faithful.' },
-                    { title: 'Scripture-based', desc: 'Rooted in God's Word, helping readers understand and apply biblical truths.' },
+                    { title: 'Scripture-based', desc: 'Rooted in God\'s Word, helping readers understand and apply biblical truths.' },
                     { title: 'Practical', desc: 'Including real-life applications and actionable steps for spiritual growth.' },
                     { title: 'Community-driven', desc: 'Written by a diverse group of contributors sharing their faith journey.' }
                   ].map((item, index) => (
