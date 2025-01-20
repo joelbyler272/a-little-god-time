@@ -40,39 +40,6 @@ export default function Home() {
       )
     },
     { 
-      id: 'prayer', 
-      title: 'Prayer Request', 
-      content: (
-        <div className="card p-8 bg-white shadow-lg">
-          <h2 className="text-3xl font-bold text-dark-blue mb-6">Share Your Prayer</h2>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-dark-blue mb-2">Your Name</label>
-              <input 
-                type="text" 
-                placeholder="Enter your name"
-                className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
-              />
-            </div>
-            <div>
-              <label className="block text-dark-blue mb-2">Prayer Request</label>
-              <textarea 
-                rows="4" 
-                placeholder="Share your prayer request"
-                className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
-              ></textarea>
-            </div>
-            <button 
-              type="submit" 
-              className="btn-primary w-full"
-            >
-              Submit Prayer Request
-            </button>
-          </form>
-        </div>
-      )
-    },
-    { 
       id: 'community', 
       title: 'Community', 
       content: (
