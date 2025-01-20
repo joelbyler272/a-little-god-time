@@ -21,27 +21,36 @@ model Devotional {
 }
 
 model ContactSubmission {
-  id        String    @id @default(cuid())
-  name      String
-  email     String
-  subject   String
-  message   String    @db.Text
-  createdAt DateTime @default(now())
-  isResolved Boolean @default(false)
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  subject    String
+  message    String   @db.Text
+  createdAt  DateTime @default(now())
+  isResolved Boolean  @default(false)
+}
+
+model ContributionSubmission {
+  id         String   @id @default(cuid())
+  title      String
+  author     String
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  isResolved Boolean  @default(false)
 }
 
 model NewsletterContent {
-  id          String    @id @default(cuid())
-  title       String
-  content     String    @db.Text
-  createdAt   DateTime @default(now())
+  id           String    @id @default(cuid())
+  title        String
+  content      String    @db.Text
+  createdAt    DateTime  @default(now())
   scheduledFor DateTime?
-  isSent      Boolean  @default(false)
+  isSent       Boolean   @default(false)
 }
 
 model NewsletterSubscriber {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
 }
