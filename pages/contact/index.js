@@ -1,28 +1,51 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
+import { validateEmail, saveFormSubmission } from '../../lib/formSubmission';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    message: '',
-    prayerRequest: false
+    message: ''
   });
+  const [status, setStatus] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message. We will get back to you soon.');
-  };
+    setError('');
+    setStatus('');
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    // Validate email
+    if (!validateEmail(formData.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    // Attempt to save form submission
+    const result = saveFormSubmission('contact', formData);
+
+    if (result.success) {
+      setStatus('Your message has been received. We will get back to you soon.');
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } else {
+      setError(result.message);
+    }
   };
 
   return (
@@ -48,15 +71,6 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-dark-blue mb-2">
-                  Prayer Requests
-                </h3>
-                <p>Email: prayer@alittlegodtime.org</p>
-                <p className="text-sm text-gray-500 mt-2">
-                  Our prayer team is dedicated to lifting up your requests.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-dark-blue mb-2">
                   Contribution Inquiries
                 </h3>
                 <p>Email: contribute@alittlegodtime.org</p>
@@ -73,6 +87,24 @@ export default function Contact() {
               Send a Message
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div 
+                  className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" 
+                  role="alert"
+                >
+                  {error}
+                </div>
+              )}
+              
+              {status && (
+                <div 
+                  className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" 
+                  role="alert"
+                >
+                  {status}
+                </div>
+              )}
+
               <div>
                 <label htmlFor="name" className="block text-dark-blue mb-2">
                   Your Name
@@ -131,23 +163,6 @@ export default function Contact() {
                   rows="6"
                   className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
                 />
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <input
-                  type="checkbox"
-                  id="prayerRequest"
-                  name="prayerRequest"
-                  checked={formData.prayerRequest}
-                  onChange={handleChange}
-                  className="mt-1 text-golden-yellow focus:ring-golden-yellow"
-                />
-                <label 
-                  htmlFor="prayerRequest" 
-                  className="text-sm text-gray-600"
-                >
-                  This is a prayer request. Our prayer team will be notified.
-                </label>
               </div>
 
               <button 
