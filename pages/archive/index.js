@@ -18,24 +18,7 @@ export default function Archive() {
       slug: "finding-peace-in-his-presence",
       themes: ["Peace", "Rest", "God's Presence"]
     },
-    {
-      title: "Walking in Faith",
-      date: "January 19, 2025",
-      scripture: "For we walk by faith, not by sight.",
-      reference: "2 Corinthians 5:7",
-      excerpt: "What does it mean to walk by faith? In today's world, we often want to see the whole path...",
-      slug: "walking-in-faith",
-      themes: ["Faith", "Trust", "Guidance"]
-    },
-    {
-      title: "The Power of Gratitude",
-      date: "January 18, 2025",
-      scripture: "Give thanks in all circumstances; for this is God's will for you in Christ Jesus.",
-      reference: "1 Thessalonians 5:18",
-      excerpt: "Gratitude has the power to transform our perspective and bring joy even in difficult times...",
-      slug: "power-of-gratitude",
-      themes: ["Gratitude", "Joy", "Perspective"]
-    }
+    // ... existing devotionals
   ]
 
   const themes = Array.from(
@@ -61,21 +44,21 @@ export default function Archive() {
         <meta name="description" content="Browse our collection of daily devotionals." />
       </Head>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="max-width-container py-12">
         <div className="max-w-5xl mx-auto">
-          <header className="text-center mb-12">
-            <h1 className="font-serif text-4xl text-text mb-4">
+          <header className="text-center mb-16">
+            <h1 className="text-4xl font-bold text-dark-blue mb-4">
               Devotional Archive
             </h1>
-            <p className="text-lg text-text/80">
+            <p className="text-xl text-gray-600">
               Browse our collection of devotionals or search by topic.
             </p>
           </header>
 
-          <div className="mb-8">
-            <div className="grid md:grid-cols-2 gap-4">
+          <div className="mb-12">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <label htmlFor="search" className="block font-serif mb-2">
+                <label htmlFor="search" className="block text-dark-blue mb-2 font-semibold">
                   Search Devotionals
                 </label>
                 <input
@@ -84,19 +67,19 @@ export default function Archive() {
                   placeholder="Search by title, scripture, or content..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-secondary focus:ring-1 focus:ring-secondary"
+                  className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
                 />
               </div>
 
               <div>
-                <label htmlFor="theme" className="block font-serif mb-2">
+                <label htmlFor="theme" className="block text-dark-blue mb-2 font-semibold">
                   Filter by Theme
                 </label>
                 <select
                   id="theme"
                   value={selectedTheme}
                   onChange={(e) => setSelectedTheme(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-secondary focus:ring-1 focus:ring-secondary"
+                  className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
                 >
                   <option value="">All Themes</option>
                   {themes.map(theme => (
@@ -108,18 +91,38 @@ export default function Archive() {
           </div>
 
           {filteredDevotionals.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-text/80">
+            <div className="text-center py-12 bg-soft-blue/10 rounded-lg">
+              <p className="text-lg text-gray-600">
                 No devotionals found matching your search criteria.
               </p>
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredDevotionals.map(devotional => (
-                <DevotionalCard
-                  key={devotional.slug}
-                  devotional={devotional}
-                />
+                <div key={devotional.slug} className="card hover:scale-105 transform transition duration-300">
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-sm text-soft-green bg-soft-green/10 px-3 py-1 rounded-full">
+                        {devotional.themes[0]}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {devotional.date}
+                      </span>
+                    </div>
+                    <h3 className="text-2xl font-semibold text-dark-blue mb-3">
+                      {devotional.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {devotional.excerpt}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-500">
+                        {devotional.reference}
+                      </span>
+                      <button className="nav-link">Read More</button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           )}
