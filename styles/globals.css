@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Color Palette */
+  --color-soft-blue: #A8DADC;
+  --color-light-gold: #F4C95D;
+  --color-soft-green: #98C1D9;
+  --color-light-gray: #F0F4F8;
+  --color-golden-yellow: #FFB703;
+  --color-dark-blue: #457B9D;
+  --color-white: #FFFFFF;
+  --color-dark-gray: #333333;
+}
+
+@layer base {
+  html, body {
+    @apply text-dark-gray bg-light-gray;
+    font-family: 'Lato', sans-serif;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    @apply text-dark-blue tracking-wide;
+  }
+
+  h1 {
+    @apply text-4xl font-bold mb-4;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold mb-3;
+  }
+}
+
+@layer components {
+  /* Primary Button Styles */
+  .btn-primary {
+    @apply bg-golden-yellow text-white px-6 py-3 rounded-lg font-bold 
+           hover:bg-dark-blue transition-colors duration-300 
+           focus:outline-none focus:ring-2 focus:ring-dark-blue;
+  }
+
+  /* Secondary Button Styles */
+  .btn-secondary {
+    @apply bg-transparent text-dark-blue border-2 border-dark-blue 
+           px-6 py-3 rounded-lg font-bold hover:bg-soft-blue 
+           hover:text-dark-blue transition-colors duration-300;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 
+           hover:shadow-lg transition-shadow duration-300;
+  }
+
+  /* Hero Section */
+  .hero {
+    @apply bg-gradient-to-br from-soft-blue to-light-gold 
+           text-white text-center py-20 px-4;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply text-dark-blue hover:text-golden-yellow 
+           transition-colors duration-200 
+           hover:underline;
+  }
+}
+
+@layer utilities {
+  .section-padding {
+    @apply py-20;
+  }
+
+  .max-width-container {
+    @apply container mx-auto px-4 lg:px-8;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  @apply w-2 bg-light-gray;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-soft-blue rounded-full;
+}
+
+/* Accessibility Enhancements */
+*:focus {
+  @apply outline-none ring-2 ring-golden-yellow ring-opacity-50;
+}
