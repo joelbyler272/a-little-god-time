@@ -1,154 +1,147 @@
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import Layout from '../components/Layout';
 
 export default function Home() {
-  const features = [
-    {
-      icon: '📖',
-      title: 'Daily Devotionals',
-      description: 'Concise, meaningful reflections to start your day with spiritual inspiration.'
-    },
-    {
-      icon: '🤝',
-      title: 'Community Driven',
-      description: 'Devotionals written by pastors, leaders, and believers from diverse backgrounds.'
-    },
-    {
-      icon: '⏱️',
-      title: 'Quick Reads',
-      description: 'Short, powerful messages designed to fit into your busy lifestyle.'
-    }
-  ]
+  const [activeTab, setActiveTab] = useState('devotional');
 
-  const latestDevotionals = [
-    {
-      title: 'Finding Peace in Chaos',
-      excerpt: 'Discover how to maintain inner calm amidst life\'s storms...',
-      date: 'January 20, 2025',
-      theme: 'Peace'
-    },
-    {
-      title: 'Embracing God\'s Guidance',
-      excerpt: 'Learning to trust divine direction in uncertain times...',
-      date: 'January 19, 2025',
-      theme: 'Faith'
-    },
-    {
-      title: 'The Power of Gratitude',
-      excerpt: 'Transform your perspective through thankfulness...',
-      date: 'January 18, 2025',
-      theme: 'Gratitude'
-    }
-  ]
-
-  return (
-    <Layout>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-soft-blue to-light-gold text-white">
-        <div className="max-width-container py-20 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            Take a Moment. Find Peace. 
-            <br />
-            Spend A Little God Time
-          </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Daily devotionals to inspire, encourage, and connect you with divine wisdom.
-          </p>
-          <div className="space-x-4">
-            <Link 
-              href="/devotionals" 
-              className="btn-primary inline-block"
-            >
-              Read Today's Devotional
-            </Link>
-            <Link 
-              href="/contribute" 
-              className="btn-secondary inline-block"
-            >
-              Contribute
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="max-width-container py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-dark-blue">
-            Why A Little God Time?
-          </h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="card text-center p-8 hover:shadow-lg transition-shadow"
-            >
-              <div className="text-6xl mb-6">{feature.icon}</div>
-              <h3 className="text-2xl font-semibold text-dark-blue mb-4">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600">{feature.description}</p>
+  const tabs = [
+    { 
+      id: 'devotional', 
+      title: 'Daily Devotional', 
+      content: (
+        <div className="card p-8 bg-white shadow-lg">
+          <h2 className="text-3xl font-bold text-dark-blue mb-6">Today's Reflection</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-2xl font-semibold mb-4">Embracing God's Love</h3>
+              <p className="text-gray-600 mb-4">
+                In the quiet moments of our day, we find solace in understanding 
+                that we are deeply loved, unconditionally and eternally.
+              </p>
+              <blockquote className="italic border-l-4 border-soft-blue pl-4 mb-4">
+                "See what great love the Father has lavished on us, that we should be 
+                called children of God!" - 1 John 3:1
+              </blockquote>
+              <Link 
+                href="/devotional" 
+                className="btn-primary inline-block"
+              >
+                Read Full Devotional
+              </Link>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Latest Devotionals Section */}
-      <div className="bg-soft-blue/10 py-16">
-        <div className="max-width-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-dark-blue">
-              Latest Devotionals
-            </h2>
+            <div className="bg-light-gold/10 rounded-lg p-6 flex items-center justify-center">
+              <div className="w-full h-64 bg-soft-blue/20 flex items-center justify-center">
+                <p className="text-dark-blue text-center">Devotional Image Placeholder</p>
+              </div>
+            </div>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {latestDevotionals.map((devotional, index) => (
+        </div>
+      )
+    },
+    { 
+      id: 'prayer', 
+      title: 'Prayer Request', 
+      content: (
+        <div className="card p-8 bg-white shadow-lg">
+          <h2 className="text-3xl font-bold text-dark-blue mb-6">Share Your Prayer</h2>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-dark-blue mb-2">Your Name</label>
+              <input 
+                type="text" 
+                placeholder="Enter your name"
+                className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
+              />
+            </div>
+            <div>
+              <label className="block text-dark-blue mb-2">Prayer Request</label>
+              <textarea 
+                rows="4" 
+                placeholder="Share your prayer request"
+                className="w-full px-4 py-3 border border-soft-blue rounded-lg focus:ring-2 focus:ring-golden-yellow"
+              ></textarea>
+            </div>
+            <button 
+              type="submit" 
+              className="btn-primary w-full"
+            >
+              Submit Prayer Request
+            </button>
+          </form>
+        </div>
+      )
+    },
+    { 
+      id: 'community', 
+      title: 'Community', 
+      content: (
+        <div className="card p-8 bg-white shadow-lg">
+          <h2 className="text-3xl font-bold text-dark-blue mb-6">Community Connections</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { 
+                title: 'Bible Study Group', 
+                description: 'Wednesdays at 7 PM', 
+                link: '#' 
+              },
+              { 
+                title: 'Youth Ministry', 
+                description: 'Fridays at 6 PM', 
+                link: '#' 
+              },
+              { 
+                title: 'Volunteer Opportunities', 
+                description: 'Serve your community', 
+                link: '#' 
+              }
+            ].map((item, index) => (
               <div 
                 key={index} 
-                className="card hover:scale-105 transform transition duration-300"
+                className="bg-soft-blue/10 p-6 rounded-lg hover:bg-soft-blue/20 transition-colors"
               >
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-sm text-soft-green bg-soft-green/10 px-3 py-1 rounded-full">
-                      {devotional.theme}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {devotional.date}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-semibold text-dark-blue mb-3">
-                    {devotional.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {devotional.excerpt}
-                  </p>
-                  <Link href="/devotionals" className="nav-link">
-                    Read More
-                  </Link>
-                </div>
+                <h3 className="text-xl font-semibold text-dark-blue mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 mb-4">{item.description}</p>
+                <Link href={item.link} className="nav-link">
+                  Learn More
+                </Link>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      )
+    },
+  ];
 
-      {/* Call to Contribute Section */}
-      <div className="max-width-container py-16 text-center">
-        <h2 className="text-3xl font-bold text-dark-blue mb-6">
-          Share Your Spiritual Insights
-        </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          We believe everyone has a unique spiritual journey. Whether you're a pastor, 
-          leader, or believer, your perspective can inspire others.
-        </p>
-        <Link 
-          href="/contribute" 
-          className="btn-primary"
-        >
-          Become a Contributor
-        </Link>
+  return (
+    <Layout>
+      <div className="max-width-container py-12">
+        {/* Tabbed Navigation */}
+        <div className="flex justify-center mb-8 bg-white rounded-full shadow-md p-2 max-w-xl mx-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                px-6 py-3 rounded-full transition-all duration-300
+                ${activeTab === tab.id 
+                  ? 'bg-golden-yellow text-white' 
+                  : 'text-dark-blue hover:bg-soft-blue/20'
+                }
+              `}
+            >
+              {tab.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Active Tab Content */}
+        <div className="mt-8">
+          {tabs.find(tab => tab.id === activeTab)?.content}
+        </div>
       </div>
     </Layout>
-  )
+  );
 }
